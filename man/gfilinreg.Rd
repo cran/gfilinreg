@@ -10,6 +10,8 @@ gfilinreg(
   distr = "student",
   df = Inf,
   L = 30L,
+  Kmax = 50L,
+  nthreads = parallel::detectCores(),
   stopifbig = TRUE
 )
 }
@@ -27,6 +29,10 @@ gfilinreg(
 \item{L}{number of subdivisions of each axis of the hypercube
 \code{(0,1)^(p+1)}}
 
+\item{Kmax}{maximal number of combinations of indices to use}
+
+\item{nthreads}{number of threads for parallel computations}
+
 \item{stopifbig}{logical, whether to stop if the algorithm requires huge 
 matrices}
 }
@@ -43,7 +49,7 @@ Weighted samples of the fiducial distribution of the
 set.seed(666L)
 x <- c(1, 2, 3, 4)
 y <- x + 3 * rcauchy(4L)
-gfi <- gfilinreg(y ~ x, distr = "cauchy", L = 30L)
+gfi <- gfilinreg(y ~ x, distr = "cauchy", L = 30L, nthreads = 2L)
 gfiSummary(gfi)
 
 }

@@ -13,6 +13,8 @@
 #'   \code{distr = "student"}
 #' @param L number of subdivisions of each axis of the hypercube
 #'   \code{(0,1)^(p+1)}
+#' @param Kmax maximal number of combinations of indices to use
+#' @param nthreads number of threads for parallel computations
 #' @param stopifbig logical, whether to stop if the algorithm requires huge 
 #'   matrices
 #'
@@ -27,19 +29,27 @@
 #' @examples set.seed(666L)
 #' x <- c(1, 2, 3, 4)
 #' y <- x + 3 * rcauchy(4L)
-#' gfi <- gfilinreg(y ~ x, distr = "cauchy", L = 30L)
+#' gfi <- gfilinreg(y ~ x, distr = "cauchy", L = 30L, nthreads = 2L)
 #' gfiSummary(gfi)
 #'
-#' @importFrom arrangements icombinations
 #' @importFrom EigenR Eigen_rank
 #' @importFrom stats model.matrix as.formula
 #' @importFrom lazyeval f_eval_lhs f_rhs
-#' @importFrom data.table CJ as.data.table uniqueN
+#' @importFrom data.table CJ as.data.table rbindlist
+#' @importFrom parallel detectCores
 #' @export
 gfilinreg <- function(
-  formula, data = NULL, distr = "student", df = Inf, L = 30L, stopifbig = TRUE
+  formula, data = NULL, distr = "student", df = Inf, L = 30L, Kmax = 50L,
+  nthreads = parallel::detectCores(), stopifbig = TRUE
 ){
-  distr <- match.arg(distr, c("normal", "student", "cauchy", "logistic"))
+  if(inSolaris()){
+    nthreads <- 1L
+  }
+  stopifnot(Kmax >= 2)
+  distr <- tolower(distr)
+  distr <- match.arg(
+    distr, c("normal", "gaussian", "student", "cauchy", "logistic")
+  )
   if(distr == "student"){
     if(df == Inf){
       distr <- "normal"
@@ -57,12 +67,35 @@ gfilinreg <- function(
     stop("Design is not of full rank.")
   }
   q <- p + 1L
-  if(stopifbig && (q * L^q > 1.1e7)){
+  #
+  if(choose(n, q) < 20000L){
+    goodCombs <- goodCombinations(X) 
+    nGoodCombs <- ncol(goodCombs)
+    if(Kmax >= nGoodCombs){
+      K <- nGoodCombs
+      combs <- goodCombs
+    }else{
+      combs <- goodCombs[, sample.int(nGoodCombs, Kmax)]
+      K <- Kmax
+    }
+  }else{
+    message(sprintf("Sampling %d combinations of indices...", Kmax))
+    combs <- sampleCombinations(X, Kmax)
+    message("Done.")
+    K <- Kmax
+  }
+  #
+  if(!enoughRAM(q*L^q*(1+K/2))){
+    stop("Insufficient free RAM.")
+  }
+  #
+  if(stopifbig && (K * q * L^q / 2 > 8e7)){
     stop(
       paste0(
         "The algorithm needs to deal with two big matrices ",
         sprintf(
-          "(%g entries: %g GB). ", q * L^q, q * L^q * 8e-9
+          "(the biggest with %g entries: %g GB). ", 
+          K * q * L^q / 2, K * q * L^q / 2 * 8e-9
         ), 
         "Set the option `stopifbig` to FALSE if you want to proceed anyway."
       )
@@ -76,59 +109,54 @@ gfilinreg <- function(
       rep(list(seq(0, 1, length.out = L+1L)[-1L] - 1/(2*L)), q)
     )
   )
-  # select indices
-  Iiterator <- icombinations(n, q)
-  I <- Iiterator$getnext()
-  XI <- X[I, , drop = FALSE]
-  while(Eigen_rank(XI) < p){
-    I <- Iiterator$getnext()
-    XI <- X[I, , drop = FALSE]
-  }
-  XmI <- X[-I, , drop = FALSE]
-  yI <- y[I]
-  ymI <- y[-I]
   # algorithm
-  # if(Eigen_rank(cbind(XI, 1)) < q){
-  #   # remove centers having equal coordinates (H'H is not invertible)
-  #   centers <-
-  #     centers[apply(centers, 1L, function(row) uniqueN(row) > 1L),]
-  #   M <- (L^q - L) / 2L # number of centers yielding sigma>0
-  # }else{
-  #   M <- floor(L^q / 2L) # TODO: test !!! - done, seems OK
-  # }
-  if(distr == "normal"){
+  XIs <- do.call(cbind, lapply(1L:K, function(k) X[combs[, k], , drop = FALSE]))
+  XmIs <- 
+    do.call(cbind, lapply(1L:K, function(k) X[-combs[, k], , drop = FALSE]))
+  yIs <- apply(combs, 2L, function(I) y[I])
+  ymIs <- rbind(apply(combs, 2L, function(I) y[-I]))
+  if(distr %in% c("normal", "gaussian")){
     cpp <- f_normal(
       centers = t(centers),
-      XI = XI, XmI = XmI,
-      yI = yI, ymI = ymI,
-      M = M, n = n
+      XIs = XIs, XmIs = XmIs,
+      yIs = yIs, ymIs = ymIs,
+      K = K, p = p, M = M, n = n, 
+      nthreads = nthreads
     )
   }else if(distr == "student"){
     cpp <- f_student(
       centers = t(centers),
-      XI = XI, XmI = XmI,
-      yI = yI, ymI = ymI,
-      M = M, n = n,
-      nu = df
+      XIs = XIs, XmIs = XmIs,
+      yIs = yIs, ymIs = ymIs,
+      K = K, p = p, M = M, n = n,
+      nu = df,
+      nthreads = nthreads
     )
   }else if(distr == "cauchy"){
     cpp <- f_cauchy(
       centers = t(centers),
-      XI = XI, XmI = XmI,
-      yI = yI, ymI = ymI,
-      M = M, n = n
+      XIs = XIs, XmIs = XmIs,
+      yIs = yIs, ymIs = ymIs,
+      K = K, p = p, M = M, n = n,
+      nthreads = nthreads
     )
   }else if(distr == "logistic"){
     cpp <- f_logistic(
       centers = t(centers),
-      XI = XI, XmI = XmI,
-      yI = yI, ymI = ymI,
-      M = M, n = n
+      XIs = XIs, XmIs = XmIs,
+      yIs = yIs, ymIs = ymIs,
+      K = K, p = p, M = M, n = n,
+      nthreads = nthreads
     )
   }
-  J <- exp(cpp[["logWeights"]])
+  #
+  LOGWEIGHTS <- lapply(cpp, `[[`, "logWeights")
+  THETAS <- lapply(cpp, function(output){
+    as.data.table(`colnames<-`(output[["Theta"]], c(betas, "sigma")))
+  })
+  J <- exp(do.call(c, LOGWEIGHTS))
   out <- list(
-    Theta = as.data.table(`colnames<-`(cpp[["Theta"]], c(betas, "sigma"))),
+    Theta = rbindlist(THETAS),
     weight = J/sum(J)
   )
   attr(out, "distr") <- distr

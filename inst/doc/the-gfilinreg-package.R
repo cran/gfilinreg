@@ -12,7 +12,8 @@ set.seed(666L)
 x <- rgamma(6L, shape = 10, rate = 1)
 y <- rnorm(6L, mean = x, sd = 2)
 dat <- data.frame(x = x, y = y)
-fidsamples <- gfilinreg(y ~ x, data = dat, distr = "normal", L = 150L)
+fidsamples <- 
+  gfilinreg(y ~ x, data = dat, distr = "normal", L = 100L, nthreads = 2L)
 
 ## ----simplereg_summary--------------------------------------------------------
 gfiSummary(fidsamples)
@@ -34,19 +35,19 @@ predict(lmfit, newdata = new, interval = "prediction")
 #  library(heavy)
 #  library(data.table)
 #  
-#  nsims <- 500L
+#  nsims <- 1000L
 #  MAXLHD <- matrix(NA_real_, nrow = nsims, ncol = 3L)
 #  colnames(MAXLHD) <- c("group1", "group2", "sigma")
 #  FIDlist <- vector("list", length = nsims)
 #  
-#  group <- gl(2L, 6L)
+#  group <- gl(2L, 3L)
 #  set.seed(666L)
 #  
 #  for(i in 1L:nsims){
 #    # simulated dataset
 #    dat <- data.frame(
 #      group = group,
-#      y = c(rcauchy(6L), 2 + rcauchy(6L))
+#      y = c(rcauchy(3L), 2 + rcauchy(3L))
 #    )
 #    # max-likelihood estimates
 #    hfit <- heavyLm(y ~ 0 + group, data = dat, family = Cauchy())
@@ -76,8 +77,8 @@ kfit_fid_mean   <- kde1d(group1_fid_mean, mult = 4)
 kfit_fid_median <- kde1d(group1_fid_median, mult = 4)
 
 curve(
-  dkde1d(x, kfit_maxlhd), from = -4, to = 4, axes = FALSE,
-  lwd = 2, col = "red", lty = "dashed", xlab = "beta1", ylab = NA
+  dkde1d(x, kfit_maxlhd), from = -6, to = 6, axes = FALSE,
+  lwd = 3, col = "red", xlab = "beta1", ylab = NA
 )
 axis(1)
 curve(
@@ -91,16 +92,16 @@ curve(
 
 ## ----estimate_group2----------------------------------------------------------
 group2_maxlhd     <- MAXLHD[, "group2"]
-group2_fid_mean   <- FID[parameter == "group2"][["mean"]][-333L]
-group2_fid_median <- FID[parameter == "group2"][["median"]][-333L]
+group2_fid_mean   <- FID[parameter == "group2"][["mean"]]
+group2_fid_median <- FID[parameter == "group2"][["median"]]
 
 kfit_maxlhd     <- kde1d(group2_maxlhd, mult = 4)
 kfit_fid_mean   <- kde1d(group2_fid_mean, mult = 4)
 kfit_fid_median <- kde1d(group2_fid_median, mult = 4)
 
 curve(
-  dkde1d(x, kfit_maxlhd), from = -2, to = 8, axes = FALSE,
-  lwd = 2, col = "red", lty = "dashed", xlab = "beta2", ylab = NA
+  dkde1d(x, kfit_maxlhd), from = -4, to = 8, axes = FALSE,
+  lwd = 3, col = "red", xlab = "beta2", ylab = NA
 )
 axis(1)
 curve(
@@ -114,8 +115,8 @@ curve(
 
 ## ----estimate_sigma-----------------------------------------------------------
 sigma_maxlhd     <- MAXLHD[, "sigma"]
-sigma_fid_mean   <- FID[parameter == "sigma"][["mean"]][-333L]
-sigma_fid_median <- FID[parameter == "sigma"][["median"]][-333L]
+sigma_fid_mean   <- FID[parameter == "sigma"][["mean"]]
+sigma_fid_median <- FID[parameter == "sigma"][["median"]]
 
 kfit_maxlhd     <- kde1d(sigma_maxlhd, xmin = 0, mult = 4)
 kfit_fid_mean   <- kde1d(sigma_fid_mean, xmin = 0, mult = 4)
@@ -127,6 +128,7 @@ curve(
 )
 axis(1)
 abline(v = median(sigma_maxlhd), col = "red", lwd = 2, lty = "dashed")
+abline(v = 1, col = "yellow", lwd = 3) # true value
 curve(
   dkde1d(x, kfit_fid_mean), add = TRUE, 
   lwd = 2, col = "green"
@@ -137,8 +139,6 @@ curve(
   lwd = 2, col = "blue"
 )
 abline(v = median(sigma_fid_median), col = "blue", lwd = 2, lty = "dashed")
-# true value:
-abline(v = 1, col = "yellow", lwd = 3)
 
 ## ----coverages----------------------------------------------------------------
 # group1

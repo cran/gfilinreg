@@ -34,7 +34,9 @@ inference <- function(fidsamples, param, alpha = 0.05){
 #'   group = gl(2, 15), 
 #'   y = c(2*rlogis(15L), 10 + 2*rlogis(15L))
 #' )
-#' gfi <- gfilinreg(y ~ 0 + group, distr = "logistic", data = dat, L = 30L)
+#' gfi <- gfilinreg(
+#'   y ~ 0 + group, distr = "logistic", data = dat, L = 30L, nthreads = 2L
+#' )
 #' gfiSummary(gfi)
 gfiSummary <- function(fidsamples, conf = 0.95){
   sims <- if(inherits(fidsamples, "gfilinreg.pred")){
@@ -64,10 +66,12 @@ gfiSummary <- function(fidsamples, conf = 0.95){
 #'
 #' @examples set.seed(666L)
 #' dat <- data.frame(
-#'   group = gl(2, 15), 
-#'   y = c(2*rlogis(15L), 10 + 2*rlogis(15L))
+#'   group = gl(2, 5), 
+#'   y = c(2*rlogis(5L), 10 + 2*rlogis(5L))
 #' )
-#' gfi <- gfilinreg(y ~ 0 + group, distr = "logistic", data = dat, L = 30L)
+#' gfi <- gfilinreg(
+#'   y ~ 0 + group, distr = "logistic", data = dat, L = 25L, nthreads = 2L
+#' )
 #' fcdf <- gfiCDF(~ group1 - group2, gfi)
 #' fcdf(0)
 #' plot(fcdf)
@@ -96,7 +100,9 @@ gfiCDF <- function(parameter, fidsamples){
 #'   group = gl(2, 15), 
 #'   y = c(2*rlogis(15L), 10 + 2*rlogis(15L))
 #' )
-#' gfi <- gfilinreg(y ~ 0 + group, distr = "logistic", data = dat, L = 30L)
+#' gfi <- gfilinreg(
+#'   y ~ 0 + group, distr = "logistic", data = dat, L = 30L, nthreads = 2L
+#' )
 #' gfiConfInt(~ group1 - group2, gfi)
 gfiConfInt <- function(parameter, fidsamples, conf = 0.95){
   fcdf <- gfiCDF(parameter, fidsamples)
@@ -123,7 +129,9 @@ gfiConfInt <- function(parameter, fidsamples, conf = 0.95){
 #'   group = gl(2, 15), 
 #'   y = c(2*rlogis(15L), 10 + 2*rlogis(15L))
 #' )
-#' gfi <- gfilinreg(y ~ 0 + group, distr = "logistic", data = dat, L = 30L)
+#' gfi <- gfilinreg(
+#'   y ~ 0 + group, distr = "logistic", data = dat, L = 30L, nthreads = 2L
+#' )
 #' gfiQuantile(~ group1 - group2, gfi, c(25, 50, 75)/100)
 gfiQuantile <- function(parameter, fidsamples, probs){
   fcdf <- gfiCDF(parameter, fidsamples)

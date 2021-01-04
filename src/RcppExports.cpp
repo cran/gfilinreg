@@ -7,80 +7,92 @@
 using namespace Rcpp;
 
 // f_normal
-Rcpp::List f_normal(const Eigen::MatrixXd& centers, const Eigen::MatrixXd& XI, const Eigen::MatrixXd& XmI, const Eigen::VectorXd& yI, const Eigen::VectorXd& ymI, const size_t M, const size_t n);
-RcppExport SEXP _gfilinreg_f_normal(SEXP centersSEXP, SEXP XISEXP, SEXP XmISEXP, SEXP yISEXP, SEXP ymISEXP, SEXP MSEXP, SEXP nSEXP) {
+Rcpp::List f_normal(const Eigen::MatrixXd& centers, const Eigen::MatrixXd& XIs, const Eigen::MatrixXd& XmIs, const Eigen::MatrixXd& yIs, const Eigen::MatrixXd& ymIs, const size_t K, const size_t p, const size_t M, const size_t n, const size_t nthreads);
+RcppExport SEXP _gfilinreg_f_normal(SEXP centersSEXP, SEXP XIsSEXP, SEXP XmIsSEXP, SEXP yIsSEXP, SEXP ymIsSEXP, SEXP KSEXP, SEXP pSEXP, SEXP MSEXP, SEXP nSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type centers(centersSEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XI(XISEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XmI(XmISEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type yI(yISEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type ymI(ymISEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XIs(XIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XmIs(XmIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type yIs(yIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type ymIs(ymIsSEXP);
+    Rcpp::traits::input_parameter< const size_t >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const size_t >::type p(pSEXP);
     Rcpp::traits::input_parameter< const size_t >::type M(MSEXP);
     Rcpp::traits::input_parameter< const size_t >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(f_normal(centers, XI, XmI, yI, ymI, M, n));
+    Rcpp::traits::input_parameter< const size_t >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(f_normal(centers, XIs, XmIs, yIs, ymIs, K, p, M, n, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
 // f_cauchy
-Rcpp::List f_cauchy(const Eigen::MatrixXd& centers, const Eigen::MatrixXd& XI, const Eigen::MatrixXd& XmI, const Eigen::VectorXd& yI, const Eigen::VectorXd& ymI, const size_t M, const size_t n);
-RcppExport SEXP _gfilinreg_f_cauchy(SEXP centersSEXP, SEXP XISEXP, SEXP XmISEXP, SEXP yISEXP, SEXP ymISEXP, SEXP MSEXP, SEXP nSEXP) {
+Rcpp::List f_cauchy(const Eigen::MatrixXd& centers, const Eigen::MatrixXd& XIs, const Eigen::MatrixXd& XmIs, const Eigen::MatrixXd& yIs, const Eigen::MatrixXd& ymIs, const size_t K, const size_t p, const size_t M, const size_t n, const size_t nthreads);
+RcppExport SEXP _gfilinreg_f_cauchy(SEXP centersSEXP, SEXP XIsSEXP, SEXP XmIsSEXP, SEXP yIsSEXP, SEXP ymIsSEXP, SEXP KSEXP, SEXP pSEXP, SEXP MSEXP, SEXP nSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type centers(centersSEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XI(XISEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XmI(XmISEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type yI(yISEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type ymI(ymISEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XIs(XIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XmIs(XmIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type yIs(yIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type ymIs(ymIsSEXP);
+    Rcpp::traits::input_parameter< const size_t >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const size_t >::type p(pSEXP);
     Rcpp::traits::input_parameter< const size_t >::type M(MSEXP);
     Rcpp::traits::input_parameter< const size_t >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(f_cauchy(centers, XI, XmI, yI, ymI, M, n));
+    Rcpp::traits::input_parameter< const size_t >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(f_cauchy(centers, XIs, XmIs, yIs, ymIs, K, p, M, n, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
 // f_student
-Rcpp::List f_student(const Eigen::MatrixXd& centers, const Eigen::MatrixXd& XI, const Eigen::MatrixXd& XmI, const Eigen::VectorXd& yI, const Eigen::VectorXd& ymI, const size_t M, const size_t n, const double nu);
-RcppExport SEXP _gfilinreg_f_student(SEXP centersSEXP, SEXP XISEXP, SEXP XmISEXP, SEXP yISEXP, SEXP ymISEXP, SEXP MSEXP, SEXP nSEXP, SEXP nuSEXP) {
+Rcpp::List f_student(const Eigen::MatrixXd& centers, const Eigen::MatrixXd& XIs, const Eigen::MatrixXd& XmIs, const Eigen::MatrixXd& yIs, const Eigen::MatrixXd& ymIs, const size_t K, const size_t p, const size_t M, const size_t n, const double nu, const size_t nthreads);
+RcppExport SEXP _gfilinreg_f_student(SEXP centersSEXP, SEXP XIsSEXP, SEXP XmIsSEXP, SEXP yIsSEXP, SEXP ymIsSEXP, SEXP KSEXP, SEXP pSEXP, SEXP MSEXP, SEXP nSEXP, SEXP nuSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type centers(centersSEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XI(XISEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XmI(XmISEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type yI(yISEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type ymI(ymISEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XIs(XIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XmIs(XmIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type yIs(yIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type ymIs(ymIsSEXP);
+    Rcpp::traits::input_parameter< const size_t >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const size_t >::type p(pSEXP);
     Rcpp::traits::input_parameter< const size_t >::type M(MSEXP);
     Rcpp::traits::input_parameter< const size_t >::type n(nSEXP);
     Rcpp::traits::input_parameter< const double >::type nu(nuSEXP);
-    rcpp_result_gen = Rcpp::wrap(f_student(centers, XI, XmI, yI, ymI, M, n, nu));
+    Rcpp::traits::input_parameter< const size_t >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(f_student(centers, XIs, XmIs, yIs, ymIs, K, p, M, n, nu, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
 // f_logistic
-Rcpp::List f_logistic(const Eigen::MatrixXd& centers, const Eigen::MatrixXd& XI, const Eigen::MatrixXd& XmI, const Eigen::VectorXd& yI, const Eigen::VectorXd& ymI, const size_t M, const size_t n);
-RcppExport SEXP _gfilinreg_f_logistic(SEXP centersSEXP, SEXP XISEXP, SEXP XmISEXP, SEXP yISEXP, SEXP ymISEXP, SEXP MSEXP, SEXP nSEXP) {
+Rcpp::List f_logistic(const Eigen::MatrixXd& centers, const Eigen::MatrixXd& XIs, const Eigen::MatrixXd& XmIs, const Eigen::MatrixXd& yIs, const Eigen::MatrixXd& ymIs, const size_t K, const size_t p, const size_t M, const size_t n, const size_t nthreads);
+RcppExport SEXP _gfilinreg_f_logistic(SEXP centersSEXP, SEXP XIsSEXP, SEXP XmIsSEXP, SEXP yIsSEXP, SEXP ymIsSEXP, SEXP KSEXP, SEXP pSEXP, SEXP MSEXP, SEXP nSEXP, SEXP nthreadsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type centers(centersSEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XI(XISEXP);
-    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XmI(XmISEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type yI(yISEXP);
-    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type ymI(ymISEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XIs(XIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type XmIs(XmIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type yIs(yIsSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type ymIs(ymIsSEXP);
+    Rcpp::traits::input_parameter< const size_t >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const size_t >::type p(pSEXP);
     Rcpp::traits::input_parameter< const size_t >::type M(MSEXP);
     Rcpp::traits::input_parameter< const size_t >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(f_logistic(centers, XI, XmI, yI, ymI, M, n));
+    Rcpp::traits::input_parameter< const size_t >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(f_logistic(centers, XIs, XmIs, yIs, ymIs, K, p, M, n, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_gfilinreg_f_normal", (DL_FUNC) &_gfilinreg_f_normal, 7},
-    {"_gfilinreg_f_cauchy", (DL_FUNC) &_gfilinreg_f_cauchy, 7},
-    {"_gfilinreg_f_student", (DL_FUNC) &_gfilinreg_f_student, 8},
-    {"_gfilinreg_f_logistic", (DL_FUNC) &_gfilinreg_f_logistic, 7},
+    {"_gfilinreg_f_normal", (DL_FUNC) &_gfilinreg_f_normal, 10},
+    {"_gfilinreg_f_cauchy", (DL_FUNC) &_gfilinreg_f_cauchy, 10},
+    {"_gfilinreg_f_student", (DL_FUNC) &_gfilinreg_f_student, 11},
+    {"_gfilinreg_f_logistic", (DL_FUNC) &_gfilinreg_f_logistic, 10},
     {NULL, NULL, 0}
 };
 
