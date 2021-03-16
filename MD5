@@ -1,9 +1,9 @@
-369d9deba984afe172d262e7e8fb88ed *DESCRIPTION
-eb2676d55c698837288806080d8d0c6a *NAMESPACE
-9455b8df013fbf618dee10e2da6cd0ae *NEWS.md
+1449ebef33fa8f301b02c5468072859e *DESCRIPTION
+c010a2f399f404f7079a6281a97e543d *NAMESPACE
+69e51d8ed259b657dddc7295a39caab5 *NEWS.md
 12da74dc82b03bd677efe0bb485142b0 *R/RcppExports.R
 cefa50c25f220bcca766dc8636fe7280 *R/gfilinreg.R
-07b28bceb45e7beb1b0ee4d2e1e43f36 *R/inference.R
+d53f73b503fae1c34f2a45f4f8c8f53d *R/inference.R
 1e338743710c8470c9c2606fae682cd0 *R/internal.R
 634c590c8ec1e7d0a97106e88cadfeaa *R/objects.R
 5ad69d80c53edf2a943787f7f778f71e *R/predictive.R
@@ -13,7 +13,7 @@ f0e7fda82f05f67e335d3dd2b95a93f4 *data/FID.rda
 29936b01debf696df2bed1c576f0f208 *data/MAXLHD.rda
 6e2c88988f3ad75e7ee534c21017f857 *inst/doc/the-gfilinreg-package.R
 dde829609a09ae6eb55dcfcecbc10f05 *inst/doc/the-gfilinreg-package.Rmd
-bc54e1ab2600906ca9ce7b2d2450e977 *inst/doc/the-gfilinreg-package.html
+273c917ebf11aae036d9b40ac1b2b99c *inst/doc/the-gfilinreg-package.html
 1e4cad4af85c91726ce9b3ffd65d5f12 *man/FID.Rd
 7a400d86dabb65ce2e7630296e8bb8fd *man/MAXLHD.Rd
 acb3549f4e16e93b97aaa1383f057fc5 *man/gfiCDF.Rd
